@@ -43,6 +43,8 @@
     padding:10px 12px;
     z-index:12;
     font-size:14px;
+    /* for slide animation */
+    transition:transform .25s ease, opacity .25s ease;
   }
   #langPanel .row{
     display:flex;
@@ -75,6 +77,13 @@
   }
   button.ui:hover{
     background:#fafafa;
+  }
+
+  /* Collapsed state for the language panel (slide down & fade) */
+  #langPanel.collapsed{
+    transform:translateY(115%);
+    opacity:0;
+    pointer-events:none;
   }
 
   /* Mobile bottom toolbar (hidden on desktop) */
@@ -191,7 +200,7 @@
 <script>
 // ====== Multilingual Fridge Poetry with Language Picker ======
 let magnets, selected=null, offset, scaler, bg, canvas;
-const STORAGE_KEY="magnets_lang_picker_v1_2";
+const STORAGE_KEY="magnets_lang_picker_v1_3";
 const StorageShim={
   set:(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}},
   get:(k)=>{try{const v=localStorage.getItem(k);return v?JSON.parse(v):null}catch(e){return null}},
@@ -211,7 +220,6 @@ let centerBandPx=CENTER_BAND;
 function recomputeCenterBand(){
   centerBandPx=CENTER_BAND*(typeof scaler!=="undefined"?scaler:1);
 }
-
 function isMobile(){ return windowWidth <= 640; }
 
 // language / lexicon
@@ -631,6 +639,7 @@ function setup(){
   updateLangCheckboxes();
   hookLangCheckboxes();
   hookMobileButtons();
+  hookLangPanelSwipe();   // <— swipe gestures
 
   rebuildLexiconFromSelection();
   makeMagnets();
@@ -802,6 +811,41 @@ function hookMobileButtons(){
   if(mReset){
     mReset.onclick=()=>resetEverything();
   }
+}
+
+// swipe gestures for language panel
+function hookLangPanelSwipe(){
+  const panel=document.getElementById('langPanel');
+  if(!panel) return;
+
+  let startY=null;
+  let fromPanel=false;
+  const threshold=50; // pixels
+
+  document.addEventListener('touchstart',e=>{
+    if(e.touches.length!==1) return;
+    const t=e.touches[0];
+    startY=t.clientY;
+    fromPanel=panel.contains(e.target);
+  },{passive:true});
+
+  document.addEventListener('touchend',e=>{
+    if(startY===null) return;
+    const t=e.changedTouches[0];
+    const dy=t.clientY-startY;
+    const collapsed=panel.classList.contains('collapsed');
+
+    // swipe down from panel to close
+    if(dy>threshold && fromPanel && !collapsed){
+      panel.classList.add('collapsed');
+    }
+    // swipe up anywhere to open (when collapsed)
+    if(dy<-threshold && collapsed){
+      panel.classList.remove('collapsed');
+    }
+    startY=null;
+    fromPanel=false;
+  },{passive:true});
 }
 </script>
 </body>
