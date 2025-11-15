@@ -2,7 +2,8 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 <title>Fridge Poetry — Multilingual</title>
 <meta name="description" content="Draggy fridge-poetry magnets with selectable languages (JA, ZH, EN, FR, KO).">
 <style>
@@ -77,15 +78,14 @@
   button.ui:hover{
     background:#fafafa;
   }
-
-  /* Collapsed state for the language panel (slide down & fade) */
+  /* Collapsed state for language panel */
   #langPanel.collapsed{
     transform:translateY(115%);
     opacity:0;
     pointer-events:none;
   }
 
-  /* Mobile bottom toolbar (hidden on desktop) */
+  /* Mobile bottom toolbar */
   #mobileBar{
     position:fixed;
     left:10px;
@@ -199,7 +199,7 @@
 // ====== Multilingual Fridge Poetry (mobile-friendly) ======
 let magnets = [];
 let selected = null, offset, scaler, bg, canvas;
-const STORAGE_KEY="magnets_lang_picker_v1_5";
+const STORAGE_KEY="magnets_lang_picker_v1_6";
 const StorageShim={
   set:(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}},
   get:(k)=>{try{const v=localStorage.getItem(k);return v?JSON.parse(v):null}catch(e){return null}},
@@ -225,7 +225,7 @@ function isMobile(){ return windowWidth <= 640; }
 // Where the poem line should sit (canvas coordinates, centered origin)
 function poemCenterY(){
   if(isMobile()){
-    // a bit above center so it's not behind the bottom UI
+    // lifted above center so it's not behind bottom bar
     return -height * 0.20;
   }
   return 0;
@@ -334,7 +334,7 @@ class Magnet{
       this.angVel=0; this.ang=this.angTarget;
     }else this.ang+=this.angVel;
 
-    // soft push away from poem line on both sides
+    // soft push away from poem line
     if(!this.isInPoem){
       const centerY = poemCenterY();
       const dy=this.pos.y-centerY;
@@ -559,7 +559,7 @@ function makeEightWordPoem(){
   const gap=12*scaler;
   const totalW=chosenMagnets.reduce((s,m)=>s+m.dim.x,0)+gap*(chosenMagnets.length-1);
   let x=-totalW/2;
-  const y=poemCenterY();   // << visible poem line
+  const y=poemCenterY();   // visible line
 
   for(let m of magnets)m.isInPoem=false;
   for(let m of chosenMagnets){
@@ -576,22 +576,10 @@ function shufflePoem(){
   StorageShim.set(STORAGE_KEY, magnets);
 }
 
-// ===== Magnets spawning: limit + inner area =====
+// ===== Magnets spawning (ALL words, but pushed away from poem line) =====
 function makeMagnets(){
   magnets=[];
-  let pool = words.slice();
-  if(isMobile()){
-    const maxMagnets = 70;
-    if(pool.length>maxMagnets){
-      const picked=[];
-      while(picked.length<maxMagnets){
-        const idx=floor(random(pool.length));
-        picked.push(pool[idx]);
-        pool.splice(idx,1);
-      }
-      pool=picked;
-    }
-  }
+  let pool = words.slice();    // NO truncation → poem always can find magnets
 
   const marginX = width * 0.18;
   const marginY = height * 0.18;
