@@ -616,13 +616,15 @@ function hit(r,x,y){
 // choose canvas size depending on device
 function chooseCanvasSize(){
   if(isMobile()){
-    const cw = Math.min(windowWidth - 20, 420); // leave a little side margin
-    const ch = Math.min(windowHeight * 0.6, cw * 1.6); // tall-ish postcard
-    return {w: cw, h: ch};
-  }else{
-    return {w: windowWidth, h: windowHeight};
+    // Make the canvas a bit narrower and much taller
+    const cw = Math.min(windowWidth - 40, 360);     // slimmer card
+    const ch = Math.min(windowHeight * 0.8, cw * 2.2); // more vertical (≈ 1:2.2)
+    return { w: cw, h: ch };
+  } else {
+    return { w: windowWidth, h: windowHeight };
   }
 }
+
 
 // p5 lifecycle
 function setup(){
