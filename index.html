@@ -6,32 +6,139 @@
 <title>Fridge Poetry — Pick Your Languages</title>
 <meta name="description" content="Draggy fridge-poetry magnets with selectable languages (JA, ZH, EN, FR, KO).">
 <style>
-  html,body{margin:0;padding:0;height:100%;background:#f6f6f6;font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,"Apple Color Emoji","Segoe UI Emoji"}
-  #credits,#howto{position:fixed;background:rgba(255,255,255,.9);border-radius:8px;box-shadow:0 2px 8px rgba(0,0,0,.08);font-size:12px;color:#111;line-height:1.35;padding:8px 10px;z-index:10}
-  #credits{right:10px;bottom:10px}
-  #howto{left:10px;bottom:10px;max-width:58ch}
-  #langPanel{position:fixed;right:10px;top:10px;background:rgba(255,255,255,.9);border-radius:10px;box-shadow:0 2px 10px rgba(0,0,0,.08);padding:10px 12px;z-index:12;font-size:14px}
-  #langPanel .row{display:flex;gap:8px;align-items:center;margin:6px 0}
-  #langPanel label{display:inline-flex;align-items:center;gap:6px;cursor:pointer}
-  #langPanel .small{font-size:12px;color:#333}
-  #langButtons{display:flex;gap:8px;margin-top:6px}
-  button.ui{background:#fff;border:1px solid #ddd;border-radius:8px;padding:6px 10px;cursor:pointer;box-shadow:0 1px 2px rgba(0,0,0,.06)}
-  button.ui:hover{background:#fafafa}
+  html,body{
+    margin:0;
+    padding:0;
+    height:100%;
+    background:#f6f6f6;
+    font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,"Apple Color Emoji","Segoe UI Emoji";
+  }
+  #credits,#howto{
+    position:fixed;
+    background:rgba(255,255,255,.9);
+    border-radius:8px;
+    box-shadow:0 2px 8px rgba(0,0,0,.08);
+    font-size:12px;
+    color:#111;
+    line-height:1.35;
+    padding:8px 10px;
+    z-index:10;
+  }
+  #credits{
+    right:10px;
+    bottom:10px;
+  }
+  #howto{
+    left:10px;
+    bottom:10px;
+    max-width:58ch;
+  }
+  #langPanel{
+    position:fixed;
+    right:10px;
+    top:10px;
+    background:rgba(255,255,255,.9);
+    border-radius:10px;
+    box-shadow:0 2px 10px rgba(0,0,0,.08);
+    padding:10px 12px;
+    z-index:12;
+    font-size:14px;
+  }
+  #langPanel .row{
+    display:flex;
+    gap:8px;
+    align-items:center;
+    margin:6px 0;
+  }
+  #langPanel label{
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+    cursor:pointer;
+  }
+  #langPanel .small{
+    font-size:12px;
+    color:#333;
+  }
+  #langButtons{
+    display:flex;
+    gap:8px;
+    margin-top:6px;
+  }
+  button.ui{
+    background:#fff;
+    border:1px solid #ddd;
+    border-radius:8px;
+    padding:6px 10px;
+    cursor:pointer;
+    box-shadow:0 1px 2px rgba(0,0,0,.06);
+  }
+  button.ui:hover{
+    background:#fafafa;
+  }
+
+  /* ===== Mobile layout ===== */
+  @media (max-width: 640px){
+    #howto{
+      left:10px;
+      right:10px;
+      bottom:70px;
+      max-width:none;
+      font-size:11px;
+      padding:6px 8px;
+    }
+    #credits{
+      right:10px;
+      bottom:10px;
+      font-size:10px;
+      padding:5px 8px;
+    }
+    #langPanel{
+      left:10px;
+      right:10px;
+      top:auto;
+      bottom:150px;
+      font-size:13px;
+    }
+    #langPanel .row{
+      flex-wrap:wrap;
+    }
+    #langButtons{
+      justify-content:flex-start;
+      flex-wrap:wrap;
+    }
+    button.ui{
+      flex:0 0 auto;
+      padding:5px 8px;
+      font-size:12px;
+    }
+    canvas{
+      touch-action:none; /* helps dragging on mobile */
+    }
+  }
 </style>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.0/p5.min.js"></script>
 </head>
 <body>
-<div id="howto"><b>How to:</b> Choose languages (top-right). Drag magnets. Click a word in the center line to swap with the same part-of-speech. Use buttons (top-left) to shuffle or reset.</div>
+<div id="howto">
+  <b>How to:</b> Choose languages (top-right). Drag magnets. Click a word in the center line to swap with the same part-of-speech. Use buttons (top-left) to shuffle or reset.
+</div>
 <div id="credits">Fridge Poetry — JA + ZH + EN + FR + KO</div>
 
 <!-- Language Picker -->
 <div id="langPanel">
   <div class="row"><b>Languages</b> <span class="small">(min 1)</span></div>
-  <div class="row"><label><input type="checkbox" data-lang="EN" checked>EN</label>
-                   <label><input type="checkbox" data-lang="FR" checked>FR</label></div>
-  <div class="row"><label><input type="checkbox" data-lang="ZH" checked>ZH</label>
-                   <label><input type="checkbox" data-lang="JA" checked>JA</label></div>
-  <div class="row"><label><input type="checkbox" data-lang="KO" checked>KO</label></div>
+  <div class="row">
+    <label><input type="checkbox" data-lang="EN" checked>EN</label>
+    <label><input type="checkbox" data-lang="FR" checked>FR</label>
+  </div>
+  <div class="row">
+    <label><input type="checkbox" data-lang="ZH" checked>ZH</label>
+    <label><input type="checkbox" data-lang="JA" checked>JA</label>
+  </div>
+  <div class="row">
+    <label><input type="checkbox" data-lang="KO" checked>KO</label>
+  </div>
   <div id="langButtons">
     <button class="ui" id="allBtn"  type="button">All</button>
     <button class="ui" id="noneBtn" type="button">None</button>
@@ -42,13 +149,27 @@
 // ====== Multilingual Fridge Poetry with Language Picker ======
 let magnets, selected=null, offset, scaler, bg;
 const STORAGE_KEY="magnets_lang_picker_v1_0";
-const StorageShim={set:(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}},get:(k)=>{try{const v=localStorage.getItem(k);return v?JSON.parse(v):null}catch(e){return null}},remove:(k)=>{try{localStorage.removeItem(k)}catch(e){}}};
+const StorageShim={
+  set:(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}},
+  get:(k)=>{try{const v=localStorage.getItem(k);return v?JSON.parse(v):null}catch(e){return null}},
+  remove:(k)=>{try{localStorage.removeItem(k)}catch(e){}}
+};
 
-const UI={shuffle:{x:10,y:10,w:200,h:34,label:"Shuffle Poem"},reset:{x:10,y:54,w:200,h:34,label:"Reset (Scatter)"}};
+const UI={
+  shuffle:{x:10,y:10,w:200,h:34,label:"Shuffle Poem"},
+  reset:{x:10,y:54,w:200,h:34,label:"Reset (Scatter)"}
+};
 const SPRING_K=.12,DAMPING=.75,ANG_K=.12,ANG_DAMP=.75,V_EPS=.02,W_EPS=.002;
 let dragMoved=false;
-const CENTER_BAND=120, CENTER_SOFT_PUSH=.06; let centerBandPx=CENTER_BAND; function recomputeCenterBand(){centerBandPx=CENTER_BAND*(typeof scaler!=="undefined"?scaler:1)}
 
+// center band to keep text readable
+const CENTER_BAND=120, CENTER_SOFT_PUSH=.06;
+let centerBandPx=CENTER_BAND;
+function recomputeCenterBand(){
+  centerBandPx=CENTER_BAND*(typeof scaler!=="undefined"?scaler:1);
+}
+
+// language / lexicon
 const LANG_ORDER=["EN","FR","ZH","JA","KO"];
 const LEX={
  EN:{DET:["the","a","an","this","that","my","your","our"],
@@ -91,72 +212,219 @@ const LEX={
 let determiners=[],adjectives=[],singularNouns=[],adverbs=[],particles=[],verbs3s=[],words=[];
 let DET_SET,ADJ_SET,NOUN_SET,ADV_SET,PREP_SET,V3_SET;
 const POS={DET:"DET",ADJ:"ADJ",NOUN:"NOUN",VERB3S:"VERB3S",ADV:"ADV",PREP:"PREP",OTHER:"OTHER"};
-const setFrom=arr=>new Set(arr.map(w=>w)), randomFrom=arr=>arr[floor(random(arr.length))];
+const setFrom=arr=>new Set(arr.map(w=>w));
+const randomFrom=arr=>arr[floor(random(arr.length))];
 
-let selectedLangs = new Set(LANG_ORDER); // default: all checked
+// language selection
+let selectedLangs = new Set(LANG_ORDER); // default all
 
 class Magnet{
   constructor(pos,val,ang=0){
-    this.pos=pos.copy(); this.target=pos.copy(); this.vel=createVector(0,0);
-    this.ang=ang; this.angTarget=ang; this.angVel=0;
-    this.val=String(val||""); this.col=252; this.scaler=typeof scaler!=="undefined"?scaler:1;
-    this.paddingX=10*this.scaler; this.paddingY=7*this.scaler;
-    this.home=pos.copy(); this.isInPoem=false; this.displaySuffix=""; this.displayOverride="";
+    this.pos=pos.copy();
+    this.target=pos.copy();
+    this.vel=createVector(0,0);
+    this.ang=ang;
+    this.angTarget=ang;
+    this.angVel=0;
+    this.val=String(val||"");
+    this.col=252;
+    this.scaler=typeof scaler!=="undefined"?scaler:1;
+    this.paddingX=10*this.scaler;
+    this.paddingY=7*this.scaler;
+    this.home=pos.copy();
+    this.isInPoem=false;
+    this.displaySuffix="";
+    this.displayOverride="";
     this.updateDimensions();
   }
   currentSurface(){return (this.displayOverride||this.val||"").replace(/[。.]$/,"")}
   getDisplayText(){return (this.displayOverride||this.val||"").replace(/[。.]$/,"")+(this.displaySuffix||"")}
-  updateDimensions(){const fs=18*this.scaler; push(); textSize(fs); textStyle(BOLD); textAlign(CENTER,CENTER);
-    const w=textWidth(this.getDisplayText())+this.paddingX*2; const h=fs*1.45+this.paddingY*2; pop();
+  updateDimensions(){
+    const fs=18*this.scaler;
+    push();
+    textSize(fs);
+    textStyle(BOLD);
+    textAlign(CENTER,CENTER);
+    const w=textWidth(this.getDisplayText())+this.paddingX*2;
+    const h=fs*1.45+this.paddingY*2;
+    pop();
     this.dim=createVector(max(28*this.scaler,w),max(24*this.scaler,h));
   }
-  setTarget(x,y,ang=null){this.target.set(x,y); if(ang!==null)this.angTarget=ang}
+  setTarget(x,y,ang=null){
+    this.target.set(x,y);
+    if(ang!==null)this.angTarget=ang;
+  }
   update(){
     let ax=(this.target.x-this.pos.x)*SPRING_K-this.vel.x*DAMPING;
     let ay=(this.target.y-this.pos.y)*SPRING_K-this.vel.y*DAMPING;
-    this.vel.x+=ax; this.vel.y+=ay;
-    if(abs(this.vel.x)<V_EPS&&abs(this.target.x-this.pos.x)<V_EPS){this.vel.x=0; this.pos.x=this.target.x}else this.pos.x+=this.vel.x;
-    if(abs(this.vel.y)<V_EPS&&abs(this.target.y-this.pos.y)<V_EPS){this.vel.y=0; this.pos.y=this.target.y}else this.pos.y+=this.vel.y;
-    let aw=(this.angTarget-this.ang)*ANG_K-this.angVel*ANG_DAMP; this.angVel+=aw;
-    if(abs(this.angVel)<W_EPS&&abs(this.angTarget-this.ang)<W_EPS){this.angVel=0; this.ang=this.angTarget}else this.ang+=this.angVel;
-    if(!this.isInPoem){const dy=this.pos.y, ay2=abs(dy); if(ay2<centerBandPx){const dir=(dy>=0)?1:-1; this.pos.y+=dir*(centerBandPx-ay2)*CENTER_SOFT_PUSH; this.target.y=this.pos.y;}}
+    this.vel.x+=ax;
+    this.vel.y+=ay;
+    if(abs(this.vel.x)<V_EPS&&abs(this.target.x-this.pos.x)<V_EPS){
+      this.vel.x=0; this.pos.x=this.target.x;
+    }else this.pos.x+=this.vel.x;
+    if(abs(this.vel.y)<V_EPS&&abs(this.target.y-this.pos.y)<V_EPS){
+      this.vel.y=0; this.pos.y=this.target.y;
+    }else this.pos.y+=this.vel.y;
+    let aw=(this.angTarget-this.ang)*ANG_K-this.angVel*ANG_DAMP;
+    this.angVel+=aw;
+    if(abs(this.angVel)<W_EPS&&abs(this.angTarget-this.ang)<W_EPS){
+      this.angVel=0; this.ang=this.angTarget;
+    }else this.ang+=this.angVel;
+
+    // soft push away from center line
+    if(!this.isInPoem){
+      const dy=this.pos.y;
+      const ay2=abs(dy);
+      if(ay2<centerBandPx){
+        const dir=(dy>=0)?1:-1;
+        this.pos.y+=dir*(centerBandPx-ay2)*CENTER_SOFT_PUSH;
+        this.target.y=this.pos.y;
+      }
+    }
   }
-  contains(px,py){const dx=px-this.pos.x,dy=py-this.pos.y,s=sin(this.ang),c=cos(this.ang);const lx=dx*c+dy*s,ly=-dx*s+dy*c;return (abs(lx)<=this.dim.x/2&&abs(ly)<=this.dim.y/2)}
-  overlaps(o){if(o===this)return false;return (abs(this.pos.x-o.pos.x)<(this.dim.x+o.dim.x)/2&&abs(this.pos.y-o.pos.y)<(this.dim.y+o.dim.y)/2)}
+  contains(px,py){
+    const dx=px-this.pos.x,dy=py-this.pos.y;
+    const s=sin(this.ang),c=cos(this.ang);
+    const lx=dx*c+dy*s;
+    const ly=-dx*s+dy*c;
+    return (abs(lx)<=this.dim.x/2&&abs(ly)<=this.dim.y/2);
+  }
+  overlaps(o){
+    if(o===this)return false;
+    return (abs(this.pos.x-o.pos.x)<(this.dim.x+o.dim.x)/2&&
+            abs(this.pos.y-o.pos.y)<(this.dim.y+o.dim.y)/2);
+  }
   show(){
-    const txt=this.getDisplayText(),r=10*this.scaler; push(); translate(this.pos.x,this.pos.y); rotate(this.ang);
-    let alphaBoost=255; if(!this.isInPoem&&abs(this.pos.y)<centerBandPx+20){const t=constrain(1-(centerBandPx-abs(this.pos.y))/centerBandPx,0,1); alphaBoost=lerp(120,255,t)}
-    noStroke(); fill(0, Math.min(70, alphaBoost*.3)); rectMode(CENTER); rect(3*this.scaler,4*this.scaler,this.dim.x,this.dim.y,r);
-    stroke(40,90); strokeWeight(1.2*this.scaler); fill(this.col,alphaBoost); rect(0,0,this.dim.x,this.dim.y,r);
-    stroke(0,30); noFill(); rect(0,0,this.dim.x-6*this.scaler,this.dim.y-6*this.scaler,r*.8);
-    noStroke(); fill(255,90); const gh=Math.max(6*this.scaler,this.dim.y*.2); rect(0,-this.dim.y/2+gh/2+1*this.scaler,this.dim.x-6*this.scaler,gh,r*.6);
-    fill(20); noStroke(); textAlign(CENTER,CENTER); textStyle(BOLD); textSize(18*this.scaler); text(txt,0,-.5*this.scaler);
+    const txt=this.getDisplayText();
+    const r=10*this.scaler;
+    push();
+    translate(this.pos.x,this.pos.y);
+    rotate(this.ang);
+    let alphaBoost=255;
+    if(!this.isInPoem&&abs(this.pos.y)<centerBandPx+20){
+      const t=constrain(1-(centerBandPx-abs(this.pos.y))/centerBandPx,0,1);
+      alphaBoost=lerp(120,255,t);
+    }
+    noStroke();
+    fill(0, Math.min(70, alphaBoost*.3));
+    rectMode(CENTER);
+    rect(3*this.scaler,4*this.scaler,this.dim.x,this.dim.y,r);
+    stroke(40,90);
+    strokeWeight(1.2*this.scaler);
+    fill(this.col,alphaBoost);
+    rect(0,0,this.dim.x,this.dim.y,r);
+    stroke(0,30);
+    noFill();
+    rect(0,0,this.dim.x-6*this.scaler,this.dim.y-6*this.scaler,r*.8);
+    noStroke();
+    fill(255,90);
+    const gh=Math.max(6*this.scaler,this.dim.y*.2);
+    rect(0,-this.dim.y/2+gh/2+1*this.scaler,this.dim.x-6*this.scaler,gh,r*.6);
+    fill(20);
+    noStroke();
+    textAlign(CENTER,CENTER);
+    textStyle(BOLD);
+    textSize(18*this.scaler);
+    text(txt,0,-.5*this.scaler);
     pop();
   }
 }
 
+// background
 function makeBackground(activeGlyphs){
-  bg=createGraphics(width,height); bg.noSmooth(); bg.background(246); bg.fill(0,30); bg.noStroke(); bg.textAlign(CENTER,CENTER);
+  bg=createGraphics(width,height);
+  bg.noSmooth();
+  bg.background(246);
+  bg.fill(0,30);
+  bg.noStroke();
+  bg.textAlign(CENTER,CENTER);
   const pool=activeGlyphs||"東都心夜雨路地港口霓虹駅高架灯影街巷记忆골목창문비빛memoireneonruellecityharbor";
-  const cell=max(10,floor(min(width,height)/60)); bg.textSize(cell*.85);
-  for(let y=cell/2;y<bg.height;y+=cell){for(let x=cell/2;x<bg.width;x+=cell){const ch=pickGlyph(pool);const jx=random(-.2*cell,.2*cell),jy=random(-.2*cell,.2*cell);bg.fill(0,random(15,45)); bg.text(ch,x+jx,y+jy);}}
-  bg.stroke(0,12); for(let y=0;y<bg.height;y+=2){bg.line(0,y,bg.width,y)}
+  const cell=max(10,floor(min(width,height)/60));
+  bg.textSize(cell*.85);
+  for(let y=cell/2;y<bg.height;y+=cell){
+    for(let x=cell/2;x<bg.width;x+=cell){
+      const ch=pickGlyph(pool);
+      const jx=random(-.2*cell,.2*cell);
+      const jy=random(-.2*cell,.2*cell);
+      bg.fill(0,random(15,45));
+      bg.text(ch,x+jx,y+jy);
+    }
+  }
+  bg.stroke(0,12);
+  for(let y=0;y<bg.height;y+=2){
+    bg.line(0,y,bg.width,y);
+  }
 }
-function pickGlyph(pool){if(random()<.12){const latin=["city","harbor","metro","ruelle","neon","빛","雨","夜"];return random(latin)} const i=floor(random(pool.length));return pool.charAt(i)}
+function pickGlyph(pool){
+  if(random()<.12){
+    const latin=["city","harbor","metro","ruelle","neon","빛","雨","夜"];
+    return random(latin);
+  }
+  const i=floor(random(pool.length));
+  return pool.charAt(i);
+}
 
-function rebuildPOSets(){DET_SET=setFrom(determiners);ADJ_SET=setFrom(adjectives);NOUN_SET=setFrom(singularNouns);ADV_SET=setFrom(adverbs);PREP_SET=setFrom(particles);V3_SET=setFrom(verbs3s)}
-function posTag(word){if(DET_SET.has(word))return POS.DET;if(ADJ_SET.has(word))return POS.ADJ;if(NOUN_SET.has(word))return POS.NOUN;if(ADV_SET.has(word))return POS.ADV;if(PREP_SET.has(word))return POS.PREP;if(V3_SET.has(word))return POS.VERB3S;return POS.OTHER}
+// POS / templates
+function rebuildPOSets(){
+  DET_SET=setFrom(determiners);
+  ADJ_SET=setFrom(adjectives);
+  NOUN_SET=setFrom(singularNouns);
+  ADV_SET=setFrom(adverbs);
+  PREP_SET=setFrom(particles);
+  V3_SET=setFrom(verbs3s);
+}
+function posTag(word){
+  if(DET_SET.has(word))return POS.DET;
+  if(ADJ_SET.has(word))return POS.ADJ;
+  if(NOUN_SET.has(word))return POS.NOUN;
+  if(ADV_SET.has(word))return POS.ADV;
+  if(PREP_SET.has(word))return POS.PREP;
+  if(V3_SET.has(word))return POS.VERB3S;
+  return POS.OTHER;
+}
 
-const TEMPLATES_8=[["DET","ADJ","NOUN","PREP","ADV","NOUN","PREP","VERB3S"],["DET","NOUN","PREP","ADJ","NOUN","PREP","ADV","VERB3S"],["NOUN","PREP","DET","ADJ","NOUN","PREP","ADV","VERB3S"],["DET","ADJ","NOUN","PREP","ADV","NOUN","PREP","VERB3S"]];
-function pickFromPOS(tag){switch(tag){case"DET":return randomFrom(determiners);case"ADJ":return randomFrom(adjectives);case"NOUN":return randomFrom(singularNouns);case"VERB3S":return randomFrom(verbs3s);case"ADV":return randomFrom(adverbs);case"PREP":return randomFrom(particles);default:return ""}}
-function chooseEnglishArticleFor(s){const ch=String(s||"").trim().charAt(0).toLowerCase();return "aeiou".includes(ch)?"an":"a"}
+const TEMPLATES_8=[
+  ["DET","ADJ","NOUN","PREP","ADV","NOUN","PREP","VERB3S"],
+  ["DET","NOUN","PREP","ADJ","NOUN","PREP","ADV","VERB3S"],
+  ["NOUN","PREP","DET","ADJ","NOUN","PREP","ADV","VERB3S"],
+  ["DET","ADJ","NOUN","PREP","ADV","NOUN","PREP","VERB3S"]
+];
+function pickFromPOS(tag){
+  switch(tag){
+    case"DET":return randomFrom(determiners);
+    case"ADJ":return randomFrom(adjectives);
+    case"NOUN":return randomFrom(singularNouns);
+    case"VERB3S":return randomFrom(verbs3s);
+    case"ADV":return randomFrom(adverbs);
+    case"PREP":return randomFrom(particles);
+    default:return "";
+  }
+}
+function chooseEnglishArticleFor(s){
+  const ch=String(s||"").trim().charAt(0).toLowerCase();
+  return "aeiou".includes(ch)?"an":"a";
+}
 
-// language selection
-function activeLangsList(){return LANG_ORDER.filter(L=>selectedLangs.has(L))}
-function saveLangSelection(){StorageShim.set(STORAGE_KEY+":langs", Array.from(selectedLangs))}
-function loadLangSelection(){const v=StorageShim.get(STORAGE_KEY+":langs"); if(Array.isArray(v)&&v.length){selectedLangs=new Set(v)}}
+// language selection helpers
+function activeLangsList(){
+  return LANG_ORDER.filter(L=>selectedLangs.has(L));
+}
+function saveLangSelection(){
+  StorageShim.set(STORAGE_KEY+":langs", Array.from(selectedLangs));
+}
+function loadLangSelection(){
+  const v=StorageShim.get(STORAGE_KEY+":langs");
+  if(Array.isArray(v)&&v.length){
+    selectedLangs=new Set(v);
+  }
+}
 function rebuildLexiconFromSelection(){
-  const langs=activeLangsList(); if(langs.length===0){selectedLangs=new Set(["EN"]); updateLangCheckboxes(); saveLangSelection()}
+  const langs=activeLangsList();
+  if(langs.length===0){
+    selectedLangs=new Set(["EN"]);
+    updateLangCheckboxes();
+    saveLangSelection();
+  }
   const use=activeLangsList();
   determiners=[].concat(...use.map(L=>LEX[L].DET));
   adjectives=[].concat(...use.map(L=>LEX[L].ADJ));
@@ -164,7 +432,10 @@ function rebuildLexiconFromSelection(){
   adverbs=[].concat(...use.map(L=>LEX[L].ADV));
   particles=[].concat(...use.map(L=>LEX[L].PREP));
   verbs3s=[].concat(...use.map(L=>LEX[L].VERB));
-  words=Array.from(new Set([...determiners,...adjectives,...singularNouns,...adverbs,...particles,...verbs3s]));
+  words=Array.from(new Set([
+    ...determiners,...adjectives,...singularNouns,
+    ...adverbs,...particles,...verbs3s
+  ]));
   rebuildPOSets();
   const glyphs=use.map(L=>LEX[L].GLYPHS).join("");
   makeBackground(glyphs);
@@ -172,65 +443,287 @@ function rebuildLexiconFromSelection(){
 
 // poem
 function makeEightWordPoem(){
-  for(let m of magnets){if(m.isInPoem){m.isInPoem=false;m.displaySuffix="";m.displayOverride="";const tilt=random(-PI/32,PI/32);m.setTarget(m.home.x,m.home.y,tilt)}};
-  const template=randomFrom(TEMPLATES_8); let chosenWords=template.map(tag=>pickFromPOS(tag));
-  for(let i=0;i<template.length;i++){if(template[i]==="NOUN"&&i>0&&template[i-1]==="NOUN"&&chosenWords[i-1]===chosenWords[i]){let n=pickFromPOS("NOUN");for(let j=0;j<6&&n===chosenWords[i-1];j++)n=pickFromPOS("NOUN");chosenWords[i]=n}}
-  for(let i=0;i<template.length;i++){if(template[i]==="DET"){const det=chosenWords[i];if(det==="a"||det==="an"){let look="";for(let j=i+1;j<template.length;j++){if(template[j]==="ADJ"||template[j]==="NOUN"){look=chosenWords[j];break}}chosenWords[i]=chooseEnglishArticleFor(look)}}}
-  const chosenMagnets=chosenWords.map(w=>findMagnetByWord(w)).filter(Boolean); if(chosenMagnets.length!==chosenWords.length) return;
-  chosenMagnets.forEach(m=>{m.displaySuffix="";m.displayOverride="";m.updateDimensions()});
-  const last=chosenMagnets[chosenMagnets.length-1], surface=last.getDisplayText(); last.displaySuffix=/[A-Za-z]/.test(surface)?".":"。"; chosenMagnets.forEach(m=>m.updateDimensions());
-  const gap=12*scaler; const totalW=chosenMagnets.reduce((s,m)=>s+m.dim.x,0)+gap*(chosenMagnets.length-1); let x=-totalW/2; const y=0;
-  for(let m of magnets) m.isInPoem=false; for(let m of chosenMagnets){m.isInPoem=true; m.setTarget(x+m.dim.x/2,y,0); x+=m.dim.x+gap;}
+  for(let m of magnets){
+    if(m.isInPoem){
+      m.isInPoem=false;
+      m.displaySuffix="";
+      m.displayOverride="";
+      const tilt=random(-PI/32,PI/32);
+      m.setTarget(m.home.x,m.home.y,tilt);
+    }
+  }
+  const template=randomFrom(TEMPLATES_8);
+  let chosenWords=template.map(tag=>pickFromPOS(tag));
+  // avoid same noun twice in a row
+  for(let i=0;i<template.length;i++){
+    if(template[i]==="NOUN"&&i>0&&template[i-1]==="NOUN"&&chosenWords[i-1]===chosenWords[i]){
+      let n=pickFromPOS("NOUN");
+      for(let j=0;j<6&&n===chosenWords[i-1];j++)n=pickFromPOS("NOUN");
+      chosenWords[i]=n;
+    }
+  }
+  // fix English a/an
+  for(let i=0;i<template.length;i++){
+    if(template[i]==="DET"){
+      const det=chosenWords[i];
+      if(det==="a"||det==="an"){
+        let look="";
+        for(let j=i+1;j<template.length;j++){
+          if(template[j]==="ADJ"||template[j]==="NOUN"){look=chosenWords[j];break}
+        }
+        chosenWords[i]=chooseEnglishArticleFor(look);
+      }
+    }
+  }
+  const chosenMagnets=chosenWords.map(w=>findMagnetByWord(w)).filter(Boolean);
+  if(chosenMagnets.length!==chosenWords.length) return;
+  chosenMagnets.forEach(m=>{
+    m.displaySuffix="";
+    m.displayOverride="";
+    m.updateDimensions();
+  });
+  const last=chosenMagnets[chosenMagnets.length-1];
+  const surface=last.getDisplayText();
+  last.displaySuffix=/[A-Za-z]/.test(surface)?".":"。";
+  chosenMagnets.forEach(m=>m.updateDimensions());
+  const gap=12*scaler;
+  const totalW=chosenMagnets.reduce((s,m)=>s+m.dim.x,0)+gap*(chosenMagnets.length-1);
+  let x=-totalW/2;
+  const y=0;
+  for(let m of magnets)m.isInPoem=false;
+  for(let m of chosenMagnets){
+    m.isInPoem=true;
+    m.setTarget(x+m.dim.x/2,y,0);
+    x+=m.dim.x+gap;
+  }
 }
-function findMagnetByWord(word){return magnets.find(m=>m.val===String(word))}
-function shufflePoem(){makeEightWordPoem(); StorageShim.set(STORAGE_KEY, magnets)}
+function findMagnetByWord(word){
+  return magnets.find(m=>m.val===String(word));
+}
+function shufflePoem(){
+  makeEightWordPoem();
+  StorageShim.set(STORAGE_KEY, magnets);
+}
 
-// create magnets
+// magnets
 function makeMagnets(){
   magnets=[];
   for(let w of words){
     let pos=createVector(0,0);
-    do{ pos.x=random(-.48*width,.48*width); pos.y=random(-.48*height,.48*height); }
-    while (abs(pos.y)<centerBandPx+30 || abs(pos.x)<0.12*width);
+    do{
+      pos.x=random(-.48*width,.48*width);
+      pos.y=random(-.48*height,.48*height);
+    }while (abs(pos.y)<centerBandPx+30 || abs(pos.x)<0.12*width);
     const ang=random(-PI/32,PI/32);
     magnets.push(new Magnet(pos,w,ang));
   }
 }
-function spreadMagnets(){magnets.sort((a,b)=>(a.pos.x-b.pos.x)); for(let m of magnets){for(let o of magnets){if(m.overlaps(o)&&m!=o){while((m.pos.x-m.dim.x/2)<(o.pos.x+o.dim.x/2)){m.pos.x+=1;o.pos.x-=1} m.target.x=m.pos.x;o.target.x=o.pos.x}}}}
-function initHomesFromCurrentPos(){for(let m of magnets){m.home=m.pos.copy();m.setTarget(m.pos.x,m.pos.y,m.ang);m.isInPoem=false}}
+function spreadMagnets(){
+  magnets.sort((a,b)=>(a.pos.x-b.pos.x));
+  for(let m of magnets){
+    for(let o of magnets){
+      if(m.overlaps(o)&&m!=o){
+        while((m.pos.x-m.dim.x/2)<(o.pos.x+o.dim.x/2)){
+          m.pos.x+=1; o.pos.x-=1;
+        }
+        m.target.x=m.pos.x;
+        o.target.x=o.pos.x;
+      }
+    }
+  }
+}
+function initHomesFromCurrentPos(){
+  for(let m of magnets){
+    m.home=m.pos.copy();
+    m.setTarget(m.pos.x,m.pos.y,m.ang);
+    m.isInPoem=false;
+  }
+}
 
-// UI
-function drawButtonsUI(){push();noStroke();fill(255,240);rect(UI.shuffle.x,UI.shuffle.y,UI.shuffle.w,UI.shuffle.h,8);rect(UI.reset.x,UI.reset.y,UI.reset.w,UI.reset.h,8);fill(0);textAlign(LEFT,CENTER);textSize(14);text(UI.shuffle.label,UI.shuffle.x+10,UI.shuffle.y+UI.shuffle.h/2+1);text(UI.reset.label,UI.reset.x+10,UI.reset.y+UI.reset.h/2+1);pop()}
-function hit(r,x,y){return (x>=r.x&&x<=r.x+r.w&&y>=r.y&&y<=r.y+r.h)}
+// UI drawing
+function drawButtonsUI(){
+  push();
+  noStroke();
+  fill(255,240);
+  rect(UI.shuffle.x,UI.shuffle.y,UI.shuffle.w,UI.shuffle.h,8);
+  rect(UI.reset.x,UI.reset.y,UI.reset.w,UI.reset.h,8);
+  fill(0);
+  textAlign(LEFT,CENTER);
+  textSize(14);
+  text(UI.shuffle.label,UI.shuffle.x+10,UI.shuffle.y+UI.shuffle.h/2+1);
+  text(UI.reset.label,UI.reset.x+10,UI.reset.y+UI.reset.h/2+1);
+  pop();
+}
+function hit(r,x,y){
+  return (x>=r.x&&x<=r.x+r.w&&y>=r.y&&y<=r.y+r.h);
+}
 
 // p5 lifecycle
 function setup(){
-  createCanvas(windowWidth,windowHeight); scaler=height/628; noSmooth(); recomputeCenterBand();
-  loadLangSelection(); updateLangCheckboxes(); hookLangCheckboxes();
+  createCanvas(windowWidth,windowHeight);
+  scaler=height/628;
+  noSmooth();
+  recomputeCenterBand();
+
+  loadLangSelection();
+  updateLangCheckboxes();
+  hookLangCheckboxes();
+
   rebuildLexiconFromSelection();
-  makeMagnets(); for(let i=0;i<10;i++) spreadMagnets(); initHomesFromCurrentPos(); makeEightWordPoem();
+  makeMagnets();
+  for(let i=0;i<10;i++) spreadMagnets();
+  initHomesFromCurrentPos();
+  makeEightWordPoem();
   textSize(16*scaler);
 }
-function draw(){background(246); image(bg,0,0); push(); translate(width/2,height/2); for(let m of magnets){if(m!==selected)m.update(); m.show();} pop(); drawButtonsUI();}
-function mousePressed(){dragMoved=false; if(hit(UI.shuffle,mouseX,mouseY)){shufflePoem();return} if(hit(UI.reset,mouseX,mouseY)){resetEverything();return}
-  const mx=mouseX-width/2,my=mouseY-height/2; for(let m of magnets){if(m.contains(mx,my)){offset=createVector(m.pos.x-mx,m.pos.y-my); selected=m;m.col=252;m.vel.set(0,0);m.angVel=0;break}}}
-function mouseDragged(){if(selected){const mx=mouseX-width/2,my=mouseY-height/2; selected.pos.x=mx+offset.x; selected.pos.y=my+offset.y; selected.target.set(selected.pos.x,selected.pos.y); dragMoved=true}}
-function mouseReleased(){for(let m of magnets){if(selected&&selected.overlaps(m)&&selected!=m){if(selected.pos.x>m.pos.x){while((selected.pos.x-selected.dim.x/2)<(m.pos.x+m.dim.x/2))selected.pos.x+=1}else{while((selected.pos.x+selected.dim.x/2)>(m.pos.x-m.dim.x/2))selected.pos.x-=1} selected.pos.y=m.pos.y; m.angTarget=0}}
-  if(selected){if(!dragMoved&&selected.isInPoem){swapWithinSamePOS(selected); StorageShim.set(STORAGE_KEY, magnets)} selected.target.set(selected.pos.x,selected.pos.y); if(!selected.isInPoem) selected.home=selected.pos.copy(); selected=null} StorageShim.set(STORAGE_KEY, magnets)}
-function keyPressed(){if(key===' '||key==='S'||key==='s'){shufflePoem();return false}}
-function swapWithinSamePOS(mag){const tag=posTag(mag.currentSurface()); let pool=[]; switch(tag){case POS.DET:pool=determiners;break;case POS.ADJ:pool=adjectives;break;case POS.NOUN:pool=singularNouns;break;case POS.VERB3S:pool=verbs3s;break;case POS.ADV:pool=adverbs;break;case POS.PREP:pool=particles;break;default:pool=[]} if(!pool.length) return;
-  const cur=mag.currentSurface(); let cand=randomFrom(pool),guard=0; while(cand===cur&&guard<16){cand=randomFrom(pool);guard++} const suf=mag.displaySuffix; mag.displayOverride=cand; mag.displaySuffix=suf; mag.updateDimensions()}
-function resetEverything(){StorageShim.remove(STORAGE_KEY); rebuildLexiconFromSelection(); makeMagnets(); initHomesFromCurrentPos(); makeEightWordPoem()}
-function windowResized(){resizeCanvas(windowWidth,windowHeight); scaler=height/628; recomputeCenterBand(); rebuildLexiconFromSelection()}
+function draw(){
+  background(246);
+  image(bg,0,0);
+  push();
+  translate(width/2,height/2);
+  for(let m of magnets){
+    if(m!==selected)m.update();
+    m.show();
+  }
+  pop();
+  drawButtonsUI();
+}
+function mousePressed(){
+  dragMoved=false;
+  if(hit(UI.shuffle,mouseX,mouseY)){shufflePoem();return}
+  if(hit(UI.reset,mouseX,mouseY)){resetEverything();return}
+  const mx=mouseX-width/2;
+  const my=mouseY-height/2;
+  for(let m of magnets){
+    if(m.contains(mx,my)){
+      offset=createVector(m.pos.x-mx,m.pos.y-my);
+      selected=m;
+      m.col=252;
+      m.vel.set(0,0);
+      m.angVel=0;
+      break;
+    }
+  }
+}
+function mouseDragged(){
+  if(selected){
+    const mx=mouseX-width/2;
+    const my=mouseY-height/2;
+    selected.pos.x=mx+offset.x;
+    selected.pos.y=my+offset.y;
+    selected.target.set(selected.pos.x,selected.pos.y);
+    dragMoved=true;
+  }
+}
+function mouseReleased(){
+  for(let m of magnets){
+    if(selected&&selected.overlaps(m)&&selected!=m){
+      if(selected.pos.x>m.pos.x){
+        while((selected.pos.x-selected.dim.x/2)<(m.pos.x+m.dim.x/2))selected.pos.x+=1;
+      }else{
+        while((selected.pos.x+selected.dim.x/2)>(m.pos.x-m.dim.x/2))selected.pos.x-=1;
+      }
+      selected.pos.y=m.pos.y;
+      m.angTarget=0;
+    }
+  }
+  if(selected){
+    if(!dragMoved&&selected.isInPoem){
+      swapWithinSamePOS(selected);
+      StorageShim.set(STORAGE_KEY, magnets);
+    }
+    selected.target.set(selected.pos.x,selected.pos.y);
+    if(!selected.isInPoem) selected.home=selected.pos.copy();
+    selected=null;
+  }
+  StorageShim.set(STORAGE_KEY, magnets);
+}
+function keyPressed(){
+  if(key===' '||key==='S'||key==='s'){
+    shufflePoem();
+    return false;
+  }
+}
+function swapWithinSamePOS(mag){
+  const tag=posTag(mag.currentSurface());
+  let pool=[];
+  switch(tag){
+    case POS.DET:pool=determiners;break;
+    case POS.ADJ:pool=adjectives;break;
+    case POS.NOUN:pool=singularNouns;break;
+    case POS.VERB3S:pool=verbs3s;break;
+    case POS.ADV:pool=adverbs;break;
+    case POS.PREP:pool=particles;break;
+    default:pool=[];
+  }
+  if(!pool.length) return;
+  const cur=mag.currentSurface();
+  let cand=randomFrom(pool),guard=0;
+  while(cand===cur&&guard<16){cand=randomFrom(pool);guard++}
+  const suf=mag.displaySuffix;
+  mag.displayOverride=cand;
+  mag.displaySuffix=suf;
+  mag.updateDimensions();
+}
+function resetEverything(){
+  StorageShim.remove(STORAGE_KEY);
+  rebuildLexiconFromSelection();
+  makeMagnets();
+  initHomesFromCurrentPos();
+  makeEightWordPoem();
+}
+function windowResized(){
+  resizeCanvas(windowWidth,windowHeight);
+  scaler=height/628;
+  recomputeCenterBand();
+  rebuildLexiconFromSelection();
+}
 
 // language panel
 function hookLangCheckboxes(){
   const inputs=[...document.querySelectorAll('#langPanel input[type="checkbox"][data-lang]')];
-  document.getElementById('allBtn').onclick=()=>{selectedLangs=new Set(LANG_ORDER); updateLangCheckboxes(); saveLangSelection(); rebuildLexiconFromSelection(); makeMagnets(); initHomesFromCurrentPos(); makeEightWordPoem();};
-  document.getElementById('noneBtn').onclick=()=>{selectedLangs=new Set(); updateLangCheckboxes(); saveLangSelection(); rebuildLexiconFromSelection(); makeMagnets(); initHomesFromCurrentPos(); makeEightWordPoem();};
-  inputs.forEach(el=>{el.addEventListener('change',()=>{const code=el.getAttribute('data-lang'); if(el.checked) selectedLangs.add(code); else selectedLangs.delete(code); if(selectedLangs.size===0){selectedLangs.add("EN");} updateLangCheckboxes(); saveLangSelection(); rebuildLexiconFromSelection(); makeMagnets(); initHomesFromCurrentPos(); makeEightWordPoem();});});
+  document.getElementById('allBtn').onclick=()=>{
+    selectedLangs=new Set(LANG_ORDER);
+    updateLangCheckboxes();
+    saveLangSelection();
+    rebuildLexiconFromSelection();
+    makeMagnets();
+    initHomesFromCurrentPos();
+    makeEightWordPoem();
+  };
+  document.getElementById('noneBtn').onclick=()=>{
+    selectedLangs=new Set(); // will get forced to EN on rebuild
+    updateLangCheckboxes();
+    saveLangSelection();
+    rebuildLexiconFromSelection();
+    makeMagnets();
+    initHomesFromCurrentPos();
+    makeEightWordPoem();
+  };
+  inputs.forEach(el=>{
+    el.addEventListener('change',()=>{
+      const code=el.getAttribute('data-lang');
+      if(el.checked) selectedLangs.add(code);
+      else selectedLangs.delete(code);
+      if(selectedLangs.size===0){
+        selectedLangs.add("EN");
+      }
+      updateLangCheckboxes();
+      saveLangSelection();
+      rebuildLexiconFromSelection();
+      makeMagnets();
+      initHomesFromCurrentPos();
+      makeEightWordPoem();
+    });
+  });
 }
-function updateLangCheckboxes(){const inputs=[...document.querySelectorAll('#langPanel input[type="checkbox"][data-lang]')]; inputs.forEach(el=>{const code=el.getAttribute('data-lang'); el.checked=selectedLangs.has(code)});}
+function updateLangCheckboxes(){
+  const inputs=[...document.querySelectorAll('#langPanel input[type="checkbox"][data-lang]')];
+  inputs.forEach(el=>{
+    const code=el.getAttribute('data-lang');
+    el.checked=selectedLangs.has(code);
+  });
+}
 </script>
 </body>
 </html>
