@@ -77,6 +77,33 @@
     background:#fafafa;
   }
 
+  /* Mobile bottom toolbar (hidden on desktop) */
+  #mobileBar{
+    position:fixed;
+    left:10px;
+    right:10px;
+    bottom:10px;
+    display:none; /* enabled in media query */
+    z-index:20;
+    justify-content:center;
+    gap:10px;
+  }
+  #mobileBar button{
+    flex:1 1 0;
+    padding:10px 0;
+    border-radius:999px;
+    border:1px solid #ddd;
+    background:rgba(255,255,255,0.96);
+    box-shadow:0 2px 8px rgba(0,0,0,0.15);
+    font-size:14px;
+    font-weight:600;
+    cursor:pointer;
+  }
+  #mobileBar button:active{
+    transform:translateY(1px);
+    box-shadow:0 1px 4px rgba(0,0,0,0.2);
+  }
+
   /* ===== Mobile layout ===== */
   @media (max-width: 640px){
     #howto{
@@ -89,7 +116,7 @@
     }
     #credits{
       right:10px;
-      bottom:10px;
+      bottom:55px; /* lifted so it doesn’t collide with toolbar */
       font-size:10px;
       padding:5px 8px;
     }
@@ -115,13 +142,16 @@
     canvas{
       touch-action:none; /* helps dragging on mobile */
     }
+    #mobileBar{
+      display:flex;
+    }
   }
 </style>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.0/p5.min.js"></script>
 </head>
 <body>
 <div id="howto">
-  <b>How to:</b> Choose languages (top-right). Drag magnets. Click a word in the center line to swap with the same part-of-speech. Use buttons (top-left) to shuffle or reset.
+  <b>How to:</b> Choose languages (top-right). Drag magnets. Click a word in the center line to swap with the same part-of-speech. Use buttons to shuffle or reset.
 </div>
 <div id="credits">Fridge Poetry — JA + ZH + EN + FR + KO</div>
 
@@ -145,10 +175,16 @@
   </div>
 </div>
 
+<!-- Mobile bottom toolbar -->
+<div id="mobileBar">
+  <button id="mShuffle" type="button">Shuffle</button>
+  <button id="mReset"   type="button">Reset</button>
+</div>
+
 <script>
 // ====== Multilingual Fridge Poetry with Language Picker ======
 let magnets, selected=null, offset, scaler, bg;
-const STORAGE_KEY="magnets_lang_picker_v1_0";
+const STORAGE_KEY="magnets_lang_picker_v1_1";
 const StorageShim={
   set:(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}},
   get:(k)=>{try{const v=localStorage.getItem(k);return v?JSON.parse(v):null}catch(e){return null}},
@@ -542,6 +578,8 @@ function initHomesFromCurrentPos(){
 
 // UI drawing
 function drawButtonsUI(){
+  // hide canvas buttons on small screens (mobile toolbar takes over)
+  if(windowWidth <= 640) return;
   push();
   noStroke();
   fill(255,240);
@@ -568,6 +606,7 @@ function setup(){
   loadLangSelection();
   updateLangCheckboxes();
   hookLangCheckboxes();
+  hookMobileButtons();
 
   rebuildLexiconFromSelection();
   makeMagnets();
@@ -590,8 +629,11 @@ function draw(){
 }
 function mousePressed(){
   dragMoved=false;
-  if(hit(UI.shuffle,mouseX,mouseY)){shufflePoem();return}
-  if(hit(UI.reset,mouseX,mouseY)){resetEverything();return}
+  // desktop buttons only
+  if(windowWidth > 640){
+    if(hit(UI.shuffle,mouseX,mouseY)){shufflePoem();return}
+    if(hit(UI.reset,mouseX,mouseY)){resetEverything();return}
+  }
   const mx=mouseX-width/2;
   const my=mouseY-height/2;
   for(let m of magnets){
@@ -723,6 +765,18 @@ function updateLangCheckboxes(){
     const code=el.getAttribute('data-lang');
     el.checked=selectedLangs.has(code);
   });
+}
+
+// mobile bottom buttons
+function hookMobileButtons(){
+  const mShuffle=document.getElementById('mShuffle');
+  const mReset=document.getElementById('mReset');
+  if(mShuffle){
+    mShuffle.onclick=()=>shufflePoem();
+  }
+  if(mReset){
+    mReset.onclick=()=>resetEverything();
+  }
 }
 </script>
 </body>
