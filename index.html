@@ -196,10 +196,10 @@
 </div>
 
 <script>
-// ====== Multilingual Fridge Poetry with Mobile-friendly Magnets ======
+// ====== Multilingual Fridge Poetry (mobile-friendly) ======
 let magnets = [];
 let selected = null, offset, scaler, bg, canvas;
-const STORAGE_KEY="magnets_lang_picker_v1_4";
+const STORAGE_KEY="magnets_lang_picker_v1_5";
 const StorageShim={
   set:(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}},
   get:(k)=>{try{const v=localStorage.getItem(k);return v?JSON.parse(v):null}catch(e){return null}},
@@ -214,13 +214,22 @@ const UI={
 const SPRING_K=.12,DAMPING=.75,ANG_K=.12,ANG_DAMP=.75,V_EPS=.02,W_EPS=.002;
 let dragMoved=false;
 
-// center band to keep text readable
+// band to keep area around poem relatively clear
 const CENTER_BAND=120, CENTER_SOFT_PUSH=.06;
 let centerBandPx=CENTER_BAND;
 function recomputeCenterBand(){
   centerBandPx=CENTER_BAND*(typeof scaler!=="undefined"?scaler:1);
 }
 function isMobile(){ return windowWidth <= 640; }
+
+// Where the poem line should sit (canvas coordinates, centered origin)
+function poemCenterY(){
+  if(isMobile()){
+    // a bit above center so it's not behind the bottom UI
+    return -height * 0.20;
+  }
+  return 0;
+}
 
 // language / lexicon
 const LANG_ORDER=["EN","FR","ZH","JA","KO"];
@@ -325,9 +334,10 @@ class Magnet{
       this.angVel=0; this.ang=this.angTarget;
     }else this.ang+=this.angVel;
 
-    // soft push away from center line
+    // soft push away from poem line on both sides
     if(!this.isInPoem){
-      const dy=this.pos.y;
+      const centerY = poemCenterY();
+      const dy=this.pos.y-centerY;
       const ay2=abs(dy);
       if(ay2<centerBandPx){
         const dir=(dy>=0)?1:-1;
@@ -355,8 +365,10 @@ class Magnet{
     translate(this.pos.x,this.pos.y);
     rotate(this.ang);
     let alphaBoost=255;
-    if(!this.isInPoem&&abs(this.pos.y)<centerBandPx+20){
-      const t=constrain(1-(centerBandPx-abs(this.pos.y))/centerBandPx,0,1);
+    const centerY = poemCenterY();
+    const dy=this.pos.y-centerY;
+    if(!this.isInPoem&&abs(dy)<centerBandPx+20){
+      const t=constrain(1-(centerBandPx-abs(dy))/centerBandPx,0,1);
       alphaBoost=lerp(120,255,t);
     }
     noStroke();
@@ -496,14 +508,8 @@ function rebuildLexiconFromSelection(){
 }
 
 // ===== Poem builder =====
-function poemCenterY(){
-  if (isMobile()) {
-    return -height * 0.18;   // Lift poem upward on mobile
-  }
-  return 0;
-}
-  
-  function makeEightWordPoem(){
+function makeEightWordPoem(){
+  // send previous poem magnets home
   for(let m of magnets){
     if(m.isInPoem){
       m.isInPoem=false;
@@ -539,6 +545,7 @@ function poemCenterY(){
   }
   const chosenMagnets=chosenWords.map(w=>findMagnetByWord(w)).filter(Boolean);
   if(chosenMagnets.length!==chosenWords.length) return;
+
   chosenMagnets.forEach(m=>{
     m.displaySuffix="";
     m.displayOverride="";
@@ -552,7 +559,8 @@ function poemCenterY(){
   const gap=12*scaler;
   const totalW=chosenMagnets.reduce((s,m)=>s+m.dim.x,0)+gap*(chosenMagnets.length-1);
   let x=-totalW/2;
-  const y = poemCenterY();
+  const y=poemCenterY();   // << visible poem line
+
   for(let m of magnets)m.isInPoem=false;
   for(let m of chosenMagnets){
     m.isInPoem=true;
@@ -571,10 +579,9 @@ function shufflePoem(){
 // ===== Magnets spawning: limit + inner area =====
 function makeMagnets(){
   magnets=[];
-  // choose words for magnets
   let pool = words.slice();
   if(isMobile()){
-    const maxMagnets = 70; // limit on mobile
+    const maxMagnets = 70;
     if(pool.length>maxMagnets){
       const picked=[];
       while(picked.length<maxMagnets){
@@ -585,13 +592,14 @@ function makeMagnets(){
       pool=picked;
     }
   }
-  // spawn inside an inner rectangle (avoid edges)
+
   const marginX = width * 0.18;
   const marginY = height * 0.18;
   const xMin = -width/2 + marginX;
   const xMax =  width/2 - marginX;
   const yMin = -height/2 + marginY;
   const yMax =  height/2 - marginY;
+  const pc = poemCenterY();
 
   for(let w of pool){
     let pos=createVector(0,0);
@@ -600,8 +608,8 @@ function makeMagnets(){
       pos.x=random(xMin,xMax);
       pos.y=random(yMin,yMax);
       tries++;
-      if(tries>40) break; // give up and accept near center
-    }while (abs(pos.y)<centerBandPx+30);
+      if(tries>40) break;
+    }while (abs(pos.y-pc)<centerBandPx+30); // keep away from poem band
     const ang=random(-PI/32,PI/32);
     magnets.push(new Magnet(pos,w,ang));
   }
@@ -650,8 +658,8 @@ function hit(r,x,y){
 // choose canvas size depending on device
 function chooseCanvasSize(){
   if(isMobile()){
-    const cw = Math.min(windowWidth - 40, 360);       // slimmer
-    const ch = Math.min(windowHeight * 0.8, cw * 2.2); // tall, vertical
+    const cw = Math.min(windowWidth - 40, 360);
+    const ch = Math.min(windowHeight * 0.8, cw * 2.2);
     return {w: cw, h: ch};
   }else{
     return {w: windowWidth, h: windowHeight};
@@ -661,7 +669,7 @@ function chooseCanvasSize(){
 // scaler: smaller on mobile
 function updateScaler(){
   if(isMobile()){
-    scaler = 0.5;        // smaller magnets
+    scaler = 0.5;
   }else{
     scaler = height / 628;
   }
